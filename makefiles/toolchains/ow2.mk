@@ -4,7 +4,7 @@ LD_DEFAULT ?= wlink OPTION quiet
 
 include $(MWD)/tc-common.mk
 
-CFLAGS += -0 -bt=dos -ms -s -osh -zu -fr=$(basename $@).err
+CFLAGS += -0 -zq -fr=$(basename $@).err
 ASFLAGS +=
 LDFLAGS += SYSTEM dos LIBPATH $(FUJINET_LIB_DIR)
 

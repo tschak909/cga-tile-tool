@@ -1,22 +1,33 @@
-#include <fujinet-fuji.h>
-#ifndef _CMOC_VERSION_
-#include <stdio.h>
-#include <string.h>
-#endif /* _CMOC_VERSION_ */
+/**
+ * @brief CGA tile tool
+ * @author Thomas Cherryhomes
+ * @email thom dot cherryhomes at gmail dot com
+ * @license GPL v. 3, see LICENSE
+ * @verbose main program
+ */
 
-AdapterConfigExtended ace;
+#include "init.h"
+#include "legend.h"
+#include "tool.h"
+#include "done.h"
+#include "charset.h"
 
-void main()
+/**
+ * @brief Previous graphics mode, set by init, used by done.
+ */
+int oldMode=0;
+
+/**
+ * @brief Program entry point
+ */
+int main(void)
 {
-  printf("Searching for FujiNet...\n");
-  if (!fuji_get_adapter_config_extended(&ace))
-    strcpy(ace.fn_version, "FAIL");
+    oldMode = init();
+    charset_init();
+    legends();
+    charset_draw_all();
+    tool();
+    done(oldMode);
 
-  printf("FujiNet: %-14s\n", ace.fn_version);
-
-  /* Loop forever so message stays on screen */
-  while (1)
-    ;
-
-  return;
+    return 0;
 }
