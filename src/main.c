@@ -20,9 +20,10 @@ int oldMode=0;
 /**
  * @brief Program entry point
  */
-int main(void)
+int main(int argc, char *argv)
 {
     oldMode = init();
+    tool_import_export_setup(argc,&argv);
     charset_init();
     legends();
     charset_draw_all();

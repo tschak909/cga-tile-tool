@@ -19,7 +19,7 @@ void legend_colors(void)
     plot_tile(color_cursor[0],11,20,3);
     plot_tile(color_chips[1],19,20,3);
     plot_tile(color_chips[2],27,20,3);
-    plot_tile(color_chips[3],36,20,3);
+    plot_tile(color_chips[3],35,20,3);
 
     /* print(28,18,3,"0"); */
     /* print(28,19,3,"1"); */
@@ -46,21 +46,19 @@ void legend_keys(void)
     print(x+14,4,3,"ROTATE");
     print(x,5,1,"            I");
     print(x+14,5,3,"INVERT");
-    print(x,7,1,"          ESC");
-    print(x+14,7,3,"QUIT");
+    print(x,6,1,"           ^E");
+    print(x+14,6,3,"EXPORT");
+    print(x,7,1,"           ^I");
+    print(x+14,7,3,"IMPORT");
+    print(x,8,1,"          ESC");
+    print(x+14,8,3,"QUIT");
 
     x=23;
 
-    print(8,20,1,"ZX");
-    print(16,20,1,"CV");
-    print(24,20,1,"BN");
-    print(32,20,1,"M,");
-
-    /* print(x,18,3,"[MJ]      COLOR 0"); */
-    /* print(x,19,3,"[VF]      COLOR 1"); */
-    /* print(x,20,3,"[BG]      COLOR 2"); */
-    /* print(x,21,3,"[NH]      COLOR 3"); */
-
+    print(5,20,1,"ZX");
+    print(13,20,1,"CV");
+    print(21,20,1,"BN");
+    print(29,20,1,"M,");
 
 }
 

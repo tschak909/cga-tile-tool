@@ -6,6 +6,8 @@
  * @verbose Tool functions
  */
 
+#include <fujinet-fuji.h>
+#include <fujinet-network.h>
 #include <stdbool.h>
 #include <conio.h>
 #include <stdio.h>
@@ -19,6 +21,9 @@
 #include "charset.h"
 
 #define TILE_SIZE 8
+#define AK_CREATOR_ID 0x1024
+#define AK_APP_ID 0x0001
+#define AK_KEY_URL 0x00
 
 /**
  * @brief Cursor position
@@ -44,6 +49,11 @@ unsigned char *current_tile = NULL;
  * @brief Current color palette (black, cyan, magenta, white)
  */
 unsigned char palette[4] = {0,2,4,6};
+
+/**
+ * @brief Export URL (64 chars)
+ */
+unsigned char export_url[256] = "N:TCP://TMA-3:6502/";
 
 /**
  * @brief Set CGA palette to 0-4
@@ -648,10 +658,74 @@ void tool_update_palette_legends(void)
         char val[3] = {0,0,0};
 
         sprintf(val,"%02X",palette[i]);
-        print(30,i+18,2,val);
+        print(i*8+8,20,2,val);
     }
 
     toolState = DRAW;
+}
+
+/**
+ * @brief Import/export setup
+ */
+void tool_import_export_setup(int argc, char *argv[])
+{
+    unsigned short l=0;
+
+    fuji_set_appkey_details(AK_CREATOR_ID,AK_APP_ID,DEFAULT);
+
+    if (argc<2)
+    {
+        fuji_read_appkey(AK_KEY_URL,&l,export_url);
+    }
+    else
+    {
+        strcpy(export_url,argv[1]);
+    }
+}
+
+/**
+ * @brief Export
+ */
+void tool_export(void)
+{
+    if (!strlen(export_url))
+    {
+        print(0,23,1,"        NO EXPORT URL.  ABORTING        ");
+        toolState = DRAW;
+        return;
+    }
+
+    print(0,23,1,"     CONNECTING TO EXPORT URL...        ");
+
+    if (network_open(export_url,OPEN_MODE_RW,OPEN_TRANS_NONE) != FN_ERR_OK)
+    {
+        print(0,23,1,"     COULD NOT OPEN EXPORT URL.         ");
+        toolState = DRAW;
+        return;
+    }
+
+    print(0,23,1,"     EXPORTING TO EXPORT URL...         ");
+
+    network_write(export_url,(const unsigned char *)charset,sizeof(charset));
+
+    print(0,23,1,"              EXPORTED                  ");
+
+    network_close(export_url);
+
+    toolState = DRAW;
+}
+
+/**
+ * @brief Import
+ */
+void tool_import(void)
+{
+    if (!strlen(export_url))
+    {
+        print(0,23,1,"        NO EXPORT URL.  ABORTING        ");
+        toolState = DRAW;
+        return;
+    }
 }
 
 /**
@@ -757,6 +831,12 @@ void tool_command(void)
         break;
     case 0x1b: // ESC
         toolState = QUIT;
+        break;
+    case 0x05: // CTRL-E
+        toolState = EXPORT;
+        break;
+    case 0x09: // CTRL-I
+        toolState = IMPORT;
         break;
     }
 }
@@ -876,6 +956,12 @@ void tool(void)
             break;
         case UPDATE_PALETTE_LEGENDS:
             tool_update_palette_legends();
+            break;
+        case EXPORT:
+            tool_export();
+            break;
+        case IMPORT:
+            tool_import();
             break;
         case QUIT:
             tool_running = false;

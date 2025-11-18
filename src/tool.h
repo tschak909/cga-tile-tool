@@ -47,6 +47,8 @@ enum _toolState
     SET_CGA_PALETTE_0,
     SET_CGA_PALETTE_1,
     UPDATE_PALETTE_LEGENDS,
+    EXPORT,
+    IMPORT
 } toolState = DRAW;
 
 /**
@@ -171,5 +173,10 @@ const unsigned char color_chips[4][16] =
  * @brief The main tool() program
  */
 void tool(void);
+
+/**
+ * @brief Import/export setup
+ */
+void tool_import_export_setup(int argc, char *argv[]);
 
 #endif /* TOOL_H */
